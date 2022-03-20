@@ -1,17 +1,35 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ThemeNotifier {
+class ThemeNotifier extends StateNotifier<ThemeMode> {
+  ThemeNotifier() : super(ThemeMode.system);
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  late bool themePref;
 
-  void setPref(value) async {
+  void getTheme() async {
     final SharedPreferences prefs = await _prefs;
-    prefs.setBool('theme', value);
+    String? currentTheme = prefs.getString('theme');
+    if (currentTheme == 'light') {
+      state = ThemeMode.light;
+    } else if (currentTheme == 'dark') {
+      state = ThemeMode.dark;
+    } else {
+      state = ThemeMode.system;
+    }
   }
 
-  void getPref() async {
+  void setTheme(ThemeMode currentTheme) async {
     final SharedPreferences prefs = await _prefs;
-    themePref = (prefs.getBool('theme') ?? false);
+
+    if (currentTheme == ThemeMode.dark) {
+      await prefs.setString('theme', 'light');
+      getTheme();
+    } else if (currentTheme == ThemeMode.light) {
+      await prefs.setString('theme', 'dark');
+      getTheme();
+    } else {
+      await prefs.setString('theme', 'light');
+      getTheme();
+    }
   }
 }

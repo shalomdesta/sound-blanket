@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sound/const/sounds_data.dart';
 import 'package:sound/widgets/slider.dart';
+import 'package:sound/widgets/theme_notifier.dart';
+import 'dart:developer' as dev;
 
 final playProvider = StateProvider<bool>((ref) => false);
+final themeProvider = StateNotifierProvider((ref) {
+  return ThemeNotifier();
+});
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,11 +26,19 @@ class _HomePageState extends ConsumerState<HomePage> {
     }
   }
 
+  var data = Data.data.map((e) {
+    return SliderContainer(
+      icon: e.icon!,
+      sound: e.sound!,
+      name: e.name!,
+    );
+  }).toList();
   late ScrollController _scrollController;
 
   @override
   void initState() {
     _scrollController = ScrollController();
+    ThemeNotifier().getTheme();
     super.initState();
   }
 
@@ -37,14 +50,11 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var data = Data.data.map((e) {
-      return SliderContainer(
-        icon: e.icon!,
-        sound: e.sound!,
-        name: e.name!,
-      );
-    }).toList();
+    final currentTheme = ref.watch(themeProvider.notifier).state;
     return MaterialApp(
+      darkTheme: ThemeData.dark(),
+      theme: ThemeData.light(),
+      themeMode: currentTheme,
       home: Scaffold(
         body: Stack(
           children: [
@@ -52,7 +62,10 @@ class _HomePageState extends ConsumerState<HomePage> {
               top: 60,
               left: MediaQuery.of(context).size.width - 50,
               child: InkWell(
-                onTap: () => setState(() {}),
+                onTap: () {
+                  ref.read(themeProvider.notifier).setTheme(currentTheme);
+                  dev.log(ref.watch(themeProvider).toString());
+                },
                 child: const Icon(
                   Icons.settings,
                   size: 35,
@@ -63,7 +76,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               top: 50,
               child: InkWell(
                 onTap: () => ref.read(playProvider.notifier).state =
-                    !ref.read(playProvider.notifier).state,
+                    !ref.watch(playProvider.notifier).state,
                 child: Icon(
                   iconSelect(),
                   size: 50,
