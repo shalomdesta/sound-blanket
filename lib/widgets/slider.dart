@@ -36,7 +36,7 @@ class SliderContainerState extends ConsumerState<SliderContainer> {
 
   @override
   Widget build(BuildContext context) {
-    bool isPlay = ref.watch(playProvider.notifier).state;
+    bool isPlay = ref.watch(playProvider);
 
     if (isPlay & !pauseChannel & (_currentRangeValue != 0)) {
       _birds.play();

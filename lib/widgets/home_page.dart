@@ -50,7 +50,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final currentTheme = ref.watch(themeProvider.notifier).state;
+    final currentTheme = ref.watch(themeProvider) as ThemeMode;
     return MaterialApp(
       darkTheme: ThemeData.dark(),
       theme: ThemeData.light(),
