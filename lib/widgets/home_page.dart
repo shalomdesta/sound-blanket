@@ -10,7 +10,7 @@ final playProvider = StateProvider<bool>((ref) => false);
 final themeProvider = StateNotifierProvider((ref) {
   return ThemeNotifier();
 });
-final data = Data.data.map((e) {
+final _data = Data.data.map((e) {
   return SliderContainer(
     icon: e.icon!,
     sound: e.sound!,
@@ -26,14 +26,6 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  IconData iconSelect() {
-    if (ref.watch(playProvider) == true) {
-      return Icons.pause_rounded;
-    } else {
-      return Icons.play_arrow_rounded;
-    }
-  }
-
   late ScrollController _scrollController;
 
   @override
@@ -78,7 +70,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                 onTap: () => ref.read(playProvider.notifier).state =
                     !ref.watch(playProvider.notifier).state,
                 child: Icon(
-                  iconSelect(),
+                  ref.watch(playProvider)
+                      ? Icons.pause_rounded
+                      : Icons.play_arrow_rounded,
                   size: 50,
                 ),
               ),
@@ -90,7 +84,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               child: SingleChildScrollView(
                 controller: _scrollController,
                 child: Column(
-                  children: [...data],
+                  children: [..._data],
                 ),
               ),
             ),

@@ -17,7 +17,7 @@ class SliderContainer extends ConsumerStatefulWidget {
 }
 
 class SliderContainerState extends ConsumerState<SliderContainer> {
-  final _birds = AudioPlayer();
+  final _sounds = AudioPlayer();
 
   @override
   void initState() {
@@ -27,7 +27,7 @@ class SliderContainerState extends ConsumerState<SliderContainer> {
 
   @override
   void dispose() {
-    _birds.dispose();
+    _sounds.dispose();
     super.dispose();
   }
 
@@ -39,11 +39,11 @@ class SliderContainerState extends ConsumerState<SliderContainer> {
     bool isPlay = ref.watch(playProvider);
 
     if (isPlay & !pauseChannel & (_currentRangeValue != 0)) {
-      _birds.play();
+      _sounds.play();
     }
 
     if (!isPlay | (_currentRangeValue == 0) | pauseChannel) {
-      _birds.pause();
+      _sounds.pause();
     }
 
     return SizedBox(
@@ -74,7 +74,7 @@ class SliderContainerState extends ConsumerState<SliderContainer> {
                   onChanged: (nextValue) => setState(
                     () {
                       _currentRangeValue = nextValue;
-                      _birds.setVolume(_currentRangeValue);
+                      _sounds.setVolume(_currentRangeValue);
                     },
                   ),
                   min: 0,
@@ -90,8 +90,8 @@ class SliderContainerState extends ConsumerState<SliderContainer> {
   }
 
   birdSound() async {
-    await _birds.setAsset(widget.sound);
-    await _birds.setLoopMode(LoopMode.one);
-    await _birds.setVolume(_currentRangeValue);
+    await _sounds.setAsset(widget.sound);
+    await _sounds.setLoopMode(LoopMode.one);
+    await _sounds.setVolume(_currentRangeValue);
   }
 }
