@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sound/const/sounds_data.dart';
+import 'package:sound/widgets/settings_widget.dart';
 import 'package:sound/widgets/slider.dart';
 import 'package:sound/widgets/theme_notifier.dart';
 import 'dart:developer' as dev;
@@ -9,6 +10,13 @@ final playProvider = StateProvider<bool>((ref) => false);
 final themeProvider = StateNotifierProvider((ref) {
   return ThemeNotifier();
 });
+final data = Data.data.map((e) {
+  return SliderContainer(
+    icon: e.icon!,
+    sound: e.sound!,
+    name: e.name!,
+  );
+}).toList();
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -26,19 +34,12 @@ class _HomePageState extends ConsumerState<HomePage> {
     }
   }
 
-  var data = Data.data.map((e) {
-    return SliderContainer(
-      icon: e.icon!,
-      sound: e.sound!,
-      name: e.name!,
-    );
-  }).toList();
   late ScrollController _scrollController;
 
   @override
   void initState() {
     _scrollController = ScrollController();
-    ThemeNotifier().getTheme();
+
     super.initState();
   }
 
@@ -62,10 +63,9 @@ class _HomePageState extends ConsumerState<HomePage> {
               top: 60,
               left: MediaQuery.of(context).size.width - 50,
               child: InkWell(
-                onTap: () {
-                  ref.read(themeProvider.notifier).setTheme(currentTheme);
-                  dev.log(ref.watch(themeProvider).toString());
-                },
+                onTap: () => showDialog(
+                    context: context,
+                    builder: (BuildContext context) => const Settings()),
                 child: const Icon(
                   Icons.settings,
                   size: 35,
