@@ -4,19 +4,11 @@ import 'package:sound/const/sounds_data.dart';
 import 'package:sound/widgets/settings_widget.dart';
 import 'package:sound/widgets/slider.dart';
 import 'package:sound/widgets/theme_notifier.dart';
-import 'dart:developer' as dev;
 
 final playProvider = StateProvider<bool>((ref) => false);
 final themeProvider = StateNotifierProvider((ref) {
   return ThemeNotifier();
 });
-final _data = Data.data.map((e) {
-  return SliderContainer(
-    icon: e.icon!,
-    sound: e.sound!,
-    name: e.name!,
-  );
-}).toList();
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -49,43 +41,45 @@ class _HomePageState extends ConsumerState<HomePage> {
       theme: ThemeData.light(),
       themeMode: currentTheme,
       home: Scaffold(
-        body: Stack(
+        body: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Positioned(
-              top: 60,
-              left: MediaQuery.of(context).size.width - 50,
-              child: InkWell(
-                onTap: () => showDialog(
-                    context: context,
-                    builder: (BuildContext context) => const Settings()),
-                child: const Icon(
-                  Icons.settings,
-                  size: 35,
-                ),
+            SafeArea(
+              child: Row(
+                children: [
+                  InkWell(
+                    onTap: () => showDialog(
+                        context: context,
+                        builder: (BuildContext context) => const Settings()),
+                    child: const Icon(
+                      Icons.settings,
+                      size: 35,
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () => ref.read(playProvider.notifier).state =
+                        !ref.watch(playProvider.notifier).state,
+                    child: Icon(
+                      ref.watch(playProvider)
+                          ? Icons.pause_rounded
+                          : Icons.play_arrow_rounded,
+                      size: 50,
+                    ),
+                  ),
+                ],
               ),
             ),
-            Positioned(
-              top: 50,
-              child: InkWell(
-                onTap: () => ref.read(playProvider.notifier).state =
-                    !ref.watch(playProvider.notifier).state,
-                child: Icon(
-                  ref.watch(playProvider)
-                      ? Icons.pause_rounded
-                      : Icons.play_arrow_rounded,
-                  size: 50,
+            Expanded(
+              child: ListView.builder(
+                itemBuilder: (context, index) => SliderContainer(
+                  icon: data[index]['icon']!,
+                  name: data[index]['name']!,
+                  sound: data[index]['sound']!,
                 ),
-              ),
-            ),
-            Positioned(
-              left: MediaQuery.of(context).size.width * 0.05,
-              top: 100,
-              bottom: 0,
-              child: SingleChildScrollView(
                 controller: _scrollController,
-                child: Column(
-                  children: [..._data],
-                ),
+                shrinkWrap: true,
+                itemCount: data.length,
+                padding: EdgeInsets.zero,
               ),
             ),
           ],

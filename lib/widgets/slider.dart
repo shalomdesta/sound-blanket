@@ -36,13 +36,11 @@ class SliderContainerState extends ConsumerState<SliderContainer> {
 
   @override
   Widget build(BuildContext context) {
-    bool isPlay = ref.watch(playProvider);
-
-    if (isPlay & !pauseChannel & (_currentRangeValue != 0)) {
+    if (ref.watch(playProvider) & !pauseChannel & (_currentRangeValue != 0)) {
       _sounds.play();
     }
 
-    if (!isPlay | (_currentRangeValue == 0) | pauseChannel) {
+    if (!ref.watch(playProvider) | (_currentRangeValue == 0) | pauseChannel) {
       _sounds.pause();
     }
 
@@ -62,7 +60,9 @@ class SliderContainerState extends ConsumerState<SliderContainer> {
                   widget.icon,
                   width: 50,
                   height: 50,
-                  color: (isPlay & !pauseChannel & (_currentRangeValue != 0))
+                  color: (ref.watch(playProvider) &
+                          !pauseChannel &
+                          (_currentRangeValue != 0))
                       ? Colors.blue
                       : Colors.black,
                 )),
