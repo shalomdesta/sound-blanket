@@ -24,7 +24,6 @@ class _SplashScreenState extends State<SplashScreen> {
           'lib/assets/icons/blanket-sound-wave-symbolic.svg',
           width: 200,
           height: 200,
-          color: Colors.black,
         ),
       ),
     );

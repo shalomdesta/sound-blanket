@@ -1,7 +1,9 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sound/widgets/home_page.dart';
 import 'package:sound/widgets/spalsh_screen.dart';
+import 'package:sound/widgets/theme_notifier.dart';
 
 void main() {
   runApp(
@@ -14,14 +16,18 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentTheme = ref.watch(themeProvider) as ThemeMode;
-    return MaterialApp(
-        darkTheme: ThemeData.dark(),
-        theme: ThemeData.light(),
-        themeMode: currentTheme,
-        routes: {
-          '/': (context) => const SplashScreen(),
-          '/home_page': (context) => const HomePage(),
-        });
+    AsyncValue<ThemeMode> config = ref.watch(theme);
+    return config.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      data: (config) => MaterialApp(
+          darkTheme: FlexThemeData.dark(scheme: FlexScheme.hippieBlue),
+          theme: FlexThemeData.light(scheme: FlexScheme.hippieBlue),
+          themeMode: config,
+          routes: {
+            '/': (context) => const SplashScreen(),
+            '/home_page': (context) => const HomePage(),
+          }),
+      error: (err, stack) => Text('Error: $err'),
+    );
   }
 }

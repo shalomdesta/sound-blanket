@@ -64,7 +64,7 @@ class SliderContainerState extends ConsumerState<SliderContainer> {
                           !pauseChannel &
                           (_currentRangeValue != 0))
                       ? Colors.blue
-                      : Colors.black,
+                      : null,
                 )),
             Column(
               children: [
