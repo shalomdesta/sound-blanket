@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sound/widgets/theme_notifier.dart';
+import 'package:sound/notifiers/theme_notifier.dart';
 
-class ThemeSelect extends ConsumerStatefulWidget {
+class ThemeSelect extends StatefulWidget {
   const ThemeSelect({Key? key}) : super(key: key);
 
   @override
   ThemeSelectState createState() => ThemeSelectState();
 }
 
-class ThemeSelectState extends ConsumerState<ThemeSelect> {
+final themeMode = ThemeNotifier();
+
+class ThemeSelectState extends State<ThemeSelect> {
   @override
   Widget build(BuildContext context) {
     return DropdownButton(
-        onChanged: <ThemeMode>(value) {
-          setTheme(value);
-          ref.refresh(theme);
+        onChanged: <ThemeMode>(value) async {
+          setState(() {
+            themeMode.value = value;
+            setTheme(themeMode.value);
+            themeMode.themeNotifier();
+          });
         },
-        value: ref.watch(theme).value,
+        value: themeMode.value,
         items: ThemeMode.values
             .map<DropdownMenuItem<ThemeMode>>(
               (e) => DropdownMenuItem(

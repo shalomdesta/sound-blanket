@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sound/const/sounds_data.dart';
+import 'package:sound/notifiers/play_notifier.dart';
 import 'package:sound/widgets/settings_widget.dart';
 import 'package:sound/widgets/slider.dart';
 
-final playProvider = StateProvider<bool>((ref) => false);
-
-class HomePage extends ConsumerStatefulWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends ConsumerState<HomePage> {
+class _HomePageState extends State<HomePage> {
   late ScrollController _scrollController;
 
   @override
   void initState() {
     _scrollController = ScrollController();
-
     super.initState();
   }
 
@@ -41,18 +38,20 @@ class _HomePageState extends ConsumerState<HomePage> {
               children: [
                 InkWell(
                   onTap: () => showDialog(
-                      context: context,
-                      builder: (BuildContext context) => const Settings()),
+                      context: context, builder: (_) => const Settings()),
                   child: const Icon(
                     Icons.settings,
                     size: 35,
                   ),
                 ),
                 InkWell(
-                  onTap: () => ref.read(playProvider.notifier).state =
-                      !ref.watch(playProvider.notifier).state,
+                  onTap: () {
+                    setState(() {
+                      playNotifeir.value = !playNotifeir.value;
+                    });
+                  },
                   child: Icon(
-                    ref.watch(playProvider)
+                    playNotifeir.value
                         ? Icons.pause_rounded
                         : Icons.play_arrow_rounded,
                     size: 50,

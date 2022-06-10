@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:just_audio/just_audio.dart';
-import 'home_page.dart';
+import 'package:sound/notifiers/play_notifier.dart';
 
-class SliderContainer extends ConsumerStatefulWidget {
+class SliderContainer extends StatefulWidget {
   const SliderContainer(
       {Key? key, required this.icon, required this.sound, required this.name})
       : super(key: key);
@@ -16,7 +15,7 @@ class SliderContainer extends ConsumerStatefulWidget {
   SliderContainerState createState() => SliderContainerState();
 }
 
-class SliderContainerState extends ConsumerState<SliderContainer> {
+class SliderContainerState extends State<SliderContainer> {
   final _sounds = AudioPlayer();
 
   @override
@@ -36,11 +35,11 @@ class SliderContainerState extends ConsumerState<SliderContainer> {
 
   @override
   Widget build(BuildContext context) {
-    if (ref.watch(playProvider) & !pauseChannel & (_currentRangeValue != 0)) {
+    if (playNotifeir.value & !pauseChannel & (_currentRangeValue != 0)) {
       _sounds.play();
     }
 
-    if (!ref.watch(playProvider) | (_currentRangeValue == 0) | pauseChannel) {
+    if (!playNotifeir.value | (_currentRangeValue == 0) | pauseChannel) {
       _sounds.pause();
     }
 
@@ -60,7 +59,7 @@ class SliderContainerState extends ConsumerState<SliderContainer> {
                   widget.icon,
                   width: 50,
                   height: 50,
-                  color: (ref.watch(playProvider) &
+                  color: (playNotifeir.value &
                           !pauseChannel &
                           (_currentRangeValue != 0))
                       ? Colors.blue
