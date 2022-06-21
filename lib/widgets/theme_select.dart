@@ -8,20 +8,17 @@ class ThemeSelect extends StatefulWidget {
   ThemeSelectState createState() => ThemeSelectState();
 }
 
-final themeMode = ThemeNotifier();
-
 class ThemeSelectState extends State<ThemeSelect> {
   @override
   Widget build(BuildContext context) {
     return DropdownButton(
         onChanged: <ThemeMode>(value) async {
           setState(() {
-            themeMode.value = value;
-            setTheme(themeMode.value);
-            themeMode.themeNotifier();
+            themeNotifier.value = value;
+            setTheme(value);
           });
         },
-        value: themeMode.value,
+        value: themeNotifier.value,
         items: ThemeMode.values
             .map<DropdownMenuItem<ThemeMode>>(
               (e) => DropdownMenuItem(

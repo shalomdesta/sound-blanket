@@ -1,8 +1,12 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:sound/const/sounds_data.dart';
 import 'package:sound/notifiers/play_notifier.dart';
+import 'package:sound/services/service_locator.dart';
 import 'package:sound/widgets/settings_widget.dart';
 import 'package:sound/widgets/slider.dart';
+
+final _audioHandler = getIt<AudioHandler>();
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -34,31 +38,47 @@ class _HomePageState extends State<HomePage> {
         children: [
           SafeArea(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                InkWell(
-                  onTap: () => showDialog(
-                      context: context, builder: (_) => const Settings()),
-                  child: const Icon(
-                    Icons.settings,
-                    size: 35,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  InkWell(
+                    onTap: () => showDialog(
+                        context: context, builder: (_) => const Settings()),
+                    child: const Icon(
+                      Icons.settings,
+                      size: 35,
+                    ),
                   ),
-                ),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      playNotifeir.value = !playNotifeir.value;
-                    });
-                  },
-                  child: Icon(
-                    playNotifeir.value
-                        ? Icons.pause_rounded
-                        : Icons.play_arrow_rounded,
-                    size: 50,
-                  ),
-                ),
-              ],
-            ),
+                  StreamBuilder<PlaybackState>(
+                      stream: _audioHandler.playbackState.distinct(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData &&
+                            snapshot.data!.playing != playNotifeir.value) {
+                          playNotifeir.value = snapshot.data!.playing;
+                        }
+
+                        return playNotifeir.value
+                            ? IconButton(
+                                onPressed: (() => setState(() {
+                                      playNotifeir.value = false;
+                                      print(playNotifeir.value);
+                                    })),
+                                icon: const Icon(
+                                  Icons.pause_rounded,
+                                  size: 50,
+                                ),
+                              )
+                            : IconButton(
+                                onPressed: (() => setState(() {
+                                      playNotifeir.value = true;
+                                      print(playNotifeir.value);
+                                    })),
+                                icon: const Icon(
+                                  Icons.play_arrow_rounded,
+                                  size: 50,
+                                ),
+                              );
+                      }),
+                ]),
           ),
           Expanded(
             child: ListView.builder(

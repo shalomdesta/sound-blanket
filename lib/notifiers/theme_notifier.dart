@@ -3,19 +3,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-class ThemeNotifier extends ValueNotifier<ThemeMode> {
-  ThemeNotifier() : super(ThemeMode.system);
-  void themeNotifier() async {
-    final SharedPreferences prefs = await _prefs;
-    final theme = prefs.getString('theme');
-    if (theme == 'dark') {
-      value = ThemeMode.dark;
-    } else if (theme == 'light') {
-      value = ThemeMode.light;
-    } else {
-      value = ThemeMode.system;
-    }
-    notifyListeners();
+ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.system);
+
+Future<void> getTheme() async {
+  final SharedPreferences prefs = await _prefs;
+  final theme = prefs.getString('theme');
+  if (theme == 'dark') {
+    themeNotifier.value = ThemeMode.dark;
+  } else if (theme == 'light') {
+    themeNotifier.value = ThemeMode.light;
+  } else {
+    themeNotifier.value = ThemeMode.system;
   }
 }
 

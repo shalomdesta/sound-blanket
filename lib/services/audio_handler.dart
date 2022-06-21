@@ -1,8 +1,5 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:sound/notifiers/play_notifier.dart';
-import 'package:sound/services/service_locator.dart';
-
-final _audioHandler = getIt<AudioHandler>();
 
 Future<AudioHandler> initAudioService() async {
   return await AudioService.init(
@@ -17,23 +14,32 @@ Future<AudioHandler> initAudioService() async {
 }
 
 class MyAudioHandler extends BaseAudioHandler {
-  @override
-  Future<void> play() async {
-    playbackState.add(playbackState.value
-        .copyWith(playing: true, controls: [MediaControl.pause]));
-    playNotifeir.value = !playNotifeir.value;
+  MyAudioHandler() {
+    _notiftyAudioHandler();
+  }
+
+  _notiftyAudioHandler() {
+    playNotifeir.addListener(() {
+      playbackState.add(playbackState.value.copyWith(
+        controls: [
+          if (playNotifeir.value) MediaControl.pause else MediaControl.play
+        ],
+        playing: playNotifeir.value,
+        androidCompactActionIndices: const [0],
+        processingState: AudioProcessingState.ready,
+      ));
+    });
   }
 
   @override
-  Future<void> pause() async {
-    playbackState.add(playbackState.value
-        .copyWith(playing: false, controls: [MediaControl.play]));
-    playNotifeir.value = !playNotifeir.value;
+  Future<void> play() {
+    playNotifeir.value = true;
+    return super.play();
   }
 
-  void dispose() {
-    _audioHandler.customAction('dispose');
+  @override
+  Future<void> pause() {
+    playNotifeir.value = false;
+    return super.pause();
   }
-
-  void init() {}
 }
