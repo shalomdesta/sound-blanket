@@ -1,4 +1,5 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:sound/const/sounds_data.dart';
 import 'package:sound/notifiers/play_notifier.dart';
@@ -38,12 +39,13 @@ class _HomePageState extends State<HomePage> {
         children: [
           SafeArea(
             child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  InkWell(
-                    onTap: () => showDialog(
+                  IconButton(
+                    onPressed: () => showDialog(
                         context: context, builder: (_) => const Settings()),
-                    child: const Icon(
+                    icon: const Icon(
                       Icons.settings,
                       size: 35,
                     ),
@@ -82,7 +84,7 @@ class _HomePageState extends State<HomePage> {
           ),
           Expanded(
             child: ListView.builder(
-              itemBuilder: (context, index) => SliderContainer(
+              itemBuilder: (_, index) => SliderContainer(
                 icon: data[index]['icon']!,
                 name: data[index]['name']!,
                 sound: data[index]['sound']!,

@@ -2,7 +2,6 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:sound/notifiers/play_notifier.dart';
 import 'package:sound/services/service_locator.dart';
 
 final _audioHandler = getIt<AudioHandler>();
